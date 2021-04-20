@@ -8,13 +8,18 @@ import java.util.ArrayList;
 
 public class CalculatorPanel extends JPanel implements ActionListener {
 
-    JLabel calcScreen = new JLabel();
-    JLabel buttonsContainer = new JLabel();
+    ArrayList<Integer> submittedValues = new ArrayList<>();
 
     String inputValue;
-    ArrayList<Integer> submittedValues = new ArrayList<>();
+    String prevOperator;
     String submittedOperator = "";
+
+    Boolean opIsSubmitted = false;
+
     int result;
+
+    JLabel calcScreen = new JLabel("");
+    JLabel buttonsContainer = new JLabel();
 
     JButton button1 = new JButton("1");
     JButton button2 = new JButton("2");
@@ -32,6 +37,7 @@ public class CalculatorPanel extends JPanel implements ActionListener {
     JButton buttonMultiply = new JButton("x");
     JButton buttonDivide = new JButton("/");
     JButton buttonEquals = new JButton("=");
+    JButton buttonClear = new JButton("C");
 
     CalculatorPanel(){
 
@@ -88,18 +94,21 @@ public class CalculatorPanel extends JPanel implements ActionListener {
         buttonMultiply.setFocusable(false);
         buttonDivide.setFocusable(false);
         buttonEquals.setFocusable(false);
+        buttonClear.setFocusable(false);
 
         buttonPlus.setBounds(415, 5, 50, 50);
         buttonMinus.setBounds(415, 75, 50, 50);
         buttonMultiply.setBounds(415, 145, 50, 50);
         buttonDivide.setBounds(415, 215, 50, 50);
         buttonEquals.setBounds(415, 285, 50, 50);
+        buttonClear.setBounds(25, 5, 50, 50);
 
         buttonPlus.addActionListener(this);
         buttonMinus.addActionListener(this);
         buttonMultiply.addActionListener(this);
         buttonDivide.addActionListener(this);
         buttonEquals.addActionListener(this);
+        buttonClear.addActionListener(this);
 
         buttonsContainer.add(button1);
         buttonsContainer.add(button2);
@@ -117,6 +126,8 @@ public class CalculatorPanel extends JPanel implements ActionListener {
         buttonsContainer.add(buttonMultiply);
         buttonsContainer.add(buttonDivide);
         buttonsContainer.add(buttonEquals);
+        buttonsContainer.add(buttonClear);
+
 
         this.add(calcScreen);
         this.add(buttonsContainer);
@@ -124,7 +135,7 @@ public class CalculatorPanel extends JPanel implements ActionListener {
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) throws NumberFormatException {
+    public void actionPerformed(ActionEvent e) throws NumberFormatException{
         // on button click, updates inputValue variable
         if(e.getSource() == button1){
             inputValue = "1";
@@ -146,63 +157,118 @@ public class CalculatorPanel extends JPanel implements ActionListener {
             inputValue = "9";
         } else if(e.getSource() == button0 ){
             inputValue = "0";
+        } else if(e.getSource() == buttonPlus){
+            inputValue = "+";
+        } else if(e.getSource() == buttonMinus){
+            inputValue = "-";
+        } else if(e.getSource() == buttonMultiply){
+            inputValue = "*";
+        } else if(e.getSource() == buttonDivide){
+            inputValue = "/";
+        } else if(e.getSource() == buttonClear){
+            inputValue = "CLEAR";
         }
-        // output of buttonEquals will not be inputValue
+
+        if(inputValue.equals("CLEAR")){
+            clearCalculator();
+            return;
+        }
+
         if(e.getSource() != buttonEquals){
-            // after determining inputValue, adds number to "screen" as String
-            if(calcScreen.getText().equals("")){
-                calcScreen.setText(inputValue);
+            // sets up operator if value is not an integer
+            try {
+                Integer.parseInt(inputValue);
+                if(opIsSubmitted){
+                   calcScreen.setText("");
+                   opIsSubmitted = false;
+                }
+            } catch(NumberFormatException value){
+                prevOperator = submittedOperator;
+                System.out.println(prevOperator);
+                submittedOperator = inputValue;
+                opIsSubmitted = true;
 
+                System.out.println(submittedOperator);
+            }
+
+            if(!opIsSubmitted){
+                    calcScreen.setText(calcScreen.getText().concat(inputValue));
             } else {
-                if(e.getSource() == buttonPlus){
-                    submittedValues.add(Integer.parseInt(calcScreen.getText()));
-                    calcScreen.setText(buttonPlus.getText());
-                    submittedOperator = buttonPlus.getText();
-                    if(submittedValues.size() == 2){
-                        result = ( submittedValues.get(0) + submittedValues.get(1) );
-                        submittedValues.clear();
-                        submittedValues.add(result);
-                        System.out.println(submittedValues);
-                        calcScreen.setText(Integer.toString(result));
-                        submittedOperator = null;
-                    }
-                } else if(e.getSource() == buttonMinus){
-                    submittedValues.add(Integer.parseInt(calcScreen.getText()));
-                    calcScreen.setText(buttonMinus.getText());
-                    submittedOperator = buttonMinus.getText();
-                } else if(e.getSource() == buttonMultiply){
-                    submittedValues.add(Integer.parseInt(calcScreen.getText()));
-                    calcScreen.setText(buttonMultiply.getText());
-                    submittedOperator = buttonMultiply.getText();
-                } else if(e.getSource() == buttonDivide){
-                    calcScreen.setText(buttonDivide.getText());
-                    submittedOperator = buttonDivide.getText();
-                } else if(calcScreen.getText().equals("+")
-                        || calcScreen.getText().equals("-")
-                        || calcScreen.getText().equals("x")
-                        || calcScreen.getText().equals("/")) {
-
-                    calcScreen.setText("");
-                    calcScreen.setText(inputValue);
-
+                submittedValues.add(Integer.parseInt(calcScreen.getText()));
+                if(submittedValues.size() < 2){
+                    calcScreen.setText(submittedOperator);
                 } else {
-                    if(submittedOperator == null){
-                        calcScreen.setText(inputValue);
-                        submittedOperator = "";
+                    if(prevOperator.equals("")) {
+                        determineResult(submittedOperator);
                     } else {
-                        calcScreen.setText(calcScreen.getText().concat(inputValue));
+                        determineResult(prevOperator);
                     }
-
+                    submittedValues.clear();
+                    submittedValues.add(result);
+                    calcScreen.setText(Integer.toString(result));
                 }
             }
-        } else {
+        } else if(e.getSource() == buttonEquals){
             submittedValues.add(Integer.parseInt(calcScreen.getText()));
-            if(submittedOperator.equals("+")){
-                result += ( submittedValues.get(0) + submittedValues.get(1) );
-                calcScreen.setText(Integer.toString(result));
-                submittedValues.clear();
-                submittedOperator = "";
-            }
+            determineResult(submittedOperator);
+
+            calcScreen.setText(Integer.toString(result));
+
+            disableButtons();
         }
+    }
+    private void determineResult(String operator) {
+        switch(operator){
+            case "+" -> result = (submittedValues.get(0) + submittedValues.get(1));
+            case "-" -> result = (submittedValues.get(0) - submittedValues.get(1));
+            case "*" -> result = (submittedValues.get(0) * submittedValues.get(1));
+            case "/" -> result = (submittedValues.get(0) / submittedValues.get(1));
+            default -> throw new Error("Something went wrong");
+        }
+    }
+    private void disableButtons() {
+        button1.setEnabled(false);
+        button2.setEnabled(false);
+        button3.setEnabled(false);
+        button4.setEnabled(false);
+        button5.setEnabled(false);
+        button6.setEnabled(false);
+        button7.setEnabled(false);
+        button8.setEnabled(false);
+        button9.setEnabled(false);
+        button0.setEnabled(false);
+
+        buttonPlus.setEnabled(false);
+        buttonMinus.setEnabled(false);
+        buttonMultiply.setEnabled(false);
+        buttonDivide.setEnabled(false);
+        buttonEquals.setEnabled(false);
+    }
+    private void clearCalculator() {
+        button1.setEnabled(true);
+        button2.setEnabled(true);
+        button3.setEnabled(true);
+        button4.setEnabled(true);
+        button5.setEnabled(true);
+        button6.setEnabled(true);
+        button7.setEnabled(true);
+        button8.setEnabled(true);
+        button9.setEnabled(true);
+        button0.setEnabled(true);
+
+        buttonPlus.setEnabled(true);
+        buttonMinus.setEnabled(true);
+        buttonMultiply.setEnabled(true);
+        buttonDivide.setEnabled(true);
+        buttonEquals.setEnabled(true);
+
+        calcScreen.setText("");
+        submittedValues.clear();
+        submittedOperator = "";
+        prevOperator = "";
+        submittedOperator = "";
+        opIsSubmitted = false;
+        inputValue = null;
+
     }
 }
