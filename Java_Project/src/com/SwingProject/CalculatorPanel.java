@@ -19,6 +19,7 @@ public class CalculatorPanel extends JPanel implements ActionListener {
     int result;
 
     JLabel calcScreen = new JLabel("");
+    JLabel calcTitle = new JLabel("Calcatron 9000");
     JLabel buttonsContainer = new JLabel();
 
     JButton button1 = new JButton("1");
@@ -40,32 +41,37 @@ public class CalculatorPanel extends JPanel implements ActionListener {
     JButton buttonClear = new JButton("C");
 
     CalculatorPanel(){
-
         this.setBounds(250, 100, 500, 750);
         this.setBackground(Color.gray);
         this.setLayout(null);
+        this.setBorder(BorderFactory.createLineBorder(Color.black, 2));
 
         calcScreen.setBounds(50, 50, 400, 200);
         calcScreen.setBackground(Color.white);
         calcScreen.setOpaque(true);
         calcScreen.setFont(new Font("Times New Roman", Font.PLAIN, 60));
         calcScreen.setHorizontalAlignment(JLabel.RIGHT);
+        calcScreen.setBorder(BorderFactory.createLineBorder(Color.black, 4));
+
+        calcTitle.setBounds(50, 300, 400, 50);
+        calcTitle.setFont(new Font("MV Boli", Font.ITALIC, 48));
+        calcTitle.setHorizontalAlignment(JLabel.CENTER);
 
         buttonsContainer.setLayout(null);
         buttonsContainer.setBounds(0, 400, 500, 350);
         buttonsContainer.setBackground(Color.darkGray);
-        buttonsContainer.setOpaque(true);
+        buttonsContainer.setBorder(BorderFactory.createLineBorder(Color.black, 1));
 
-        button1.setBounds(115, 25, 55, 55);
-        button2.setBounds(215, 25, 55, 55);
-        button3.setBounds(315, 25, 55, 55);
-        button4.setBounds(115, 95, 55, 55);
-        button5.setBounds(215, 95, 55, 55);
-        button6.setBounds(315, 95, 55, 55);
-        button7.setBounds(115, 165, 55, 55);
-        button8.setBounds(215, 165, 55, 55);
-        button9.setBounds(315, 165, 55, 55);
-        button0.setBounds(215, 235, 55, 55);
+        button1.setBounds(115, 50, 55, 55);
+        button2.setBounds(215, 50, 55, 55);
+        button3.setBounds(315, 50, 55, 55);
+        button4.setBounds(115, 120, 55, 55);
+        button5.setBounds(215, 120, 55, 55);
+        button6.setBounds(315, 120, 55, 55);
+        button7.setBounds(115, 190, 55, 55);
+        button8.setBounds(215, 190, 55, 55);
+        button9.setBounds(315, 190, 55, 55);
+        button0.setBounds(215, 260, 55, 55);
 
         button1.setFocusable(false);
         button2.setFocusable(false);
@@ -96,12 +102,12 @@ public class CalculatorPanel extends JPanel implements ActionListener {
         buttonEquals.setFocusable(false);
         buttonClear.setFocusable(false);
 
-        buttonPlus.setBounds(415, 5, 50, 50);
-        buttonMinus.setBounds(415, 75, 50, 50);
-        buttonMultiply.setBounds(415, 145, 50, 50);
-        buttonDivide.setBounds(415, 215, 50, 50);
-        buttonEquals.setBounds(415, 285, 50, 50);
-        buttonClear.setBounds(25, 5, 50, 50);
+        buttonPlus.setBounds(415, 10, 50, 50);
+        buttonMinus.setBounds(415, 80, 50, 50);
+        buttonMultiply.setBounds(415, 150, 50, 50);
+        buttonDivide.setBounds(415, 220, 50, 50);
+        buttonEquals.setBounds(415, 290, 50, 50);
+        buttonClear.setBounds(15, 15, 50, 50);
 
         buttonPlus.addActionListener(this);
         buttonMinus.addActionListener(this);
@@ -130,6 +136,7 @@ public class CalculatorPanel extends JPanel implements ActionListener {
 
 
         this.add(calcScreen);
+        this.add(calcTitle);
         this.add(buttonsContainer);
 
     }
