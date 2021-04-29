@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 public class CalculatorPanel extends JPanel implements ActionListener {
 
-    ArrayList<Integer> submittedValues = new ArrayList<>();
+    ArrayList<Double> submittedValues = new ArrayList<>();
 
     String inputValue;
     String prevOperator;
@@ -16,7 +16,7 @@ public class CalculatorPanel extends JPanel implements ActionListener {
 
     Boolean opIsSubmitted = false;
 
-    int result;
+    double result;
 
     JLabel calcScreen = new JLabel("");
     JLabel calcTitle = new JLabel("Calcatron 9000");
@@ -201,7 +201,7 @@ public class CalculatorPanel extends JPanel implements ActionListener {
             if(!opIsSubmitted){
                     calcScreen.setText(calcScreen.getText().concat(inputValue));
             } else {
-                submittedValues.add(Integer.parseInt(calcScreen.getText()));
+                submittedValues.add(Double.parseDouble(calcScreen.getText()));
                 if(submittedValues.size() < 2){
                     calcScreen.setText(submittedOperator);
                 } else {
@@ -212,14 +212,14 @@ public class CalculatorPanel extends JPanel implements ActionListener {
                     }
                     submittedValues.clear();
                     submittedValues.add(result);
-                    calcScreen.setText(Integer.toString(result));
+                    calcScreen.setText(Double.toString(result));
                 }
             }
         } else if(e.getSource() == buttonEquals){
-            submittedValues.add(Integer.parseInt(calcScreen.getText()));
+            submittedValues.add(Double.parseDouble(calcScreen.getText()));
             determineResult(submittedOperator);
 
-            calcScreen.setText(Integer.toString(result));
+            calcScreen.setText(Double.toString(result));
 
             disableButtons();
         }
